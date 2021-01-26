@@ -14,14 +14,17 @@ const favoriteBlog = blogsArray => {
   if (blogsArray.length === 0) {
     return {}
   }
-  const likeList = blogsArray.map(blog => blog.likes)
-  const mostLikes = Math.max(...likeList)
-  const favoriteIndex = likeList.indexOf(mostLikes)
-  const targetObject = blogsArray[favoriteIndex]
+
+  const favorite = blogsArray.reduce( (accumulator, current) => 
+    accumulator.likes > current.likes
+    ? accumulator
+    : current
+  )
+
   return {
-    title: targetObject.title,
-    author: targetObject.author,
-    likes: targetObject.likes,
+    title: favorite.title,
+    author: favorite.author,
+    likes: favorite.likes
   }
 }
 
@@ -30,25 +33,26 @@ const mostBlogs = (blogsArray) => {
     return {}
   }
 
-  const blogHash = {}
-  blogsArray.forEach((blog) => {
-    blogHash[blog.author] === undefined
-    ? blogHash[blog.author] = 1
-    : blogHash[blog.author] += 1
-  })
+  const authorBlogCountObj = blogsArray // object of {author: # of blogs}
+    .reduce( (accumulator, current) => {
+      accumulator[current.author] === undefined
+      ? accumulator[current.author] = 1
+      : accumulator[current.author] += 1
+      return accumulator
+    }, {})
 
-  const most = {
-    author: null,
-    blogs: 0
-  }
-
-  Object.entries(blogHash).forEach( ([author, blogs]) => {
-    if (most.blogs < blogs) {
-      most.author = author
-      most.blogs = blogs
+  const most = Object.entries(authorBlogCountObj)
+    .map( ([key, value]) => {
+      return {
+        author: key,
+        blogs: value
       }
-    }
-  )
+    })
+    .reduce( (accumulator, current) => 
+      current.blogs > accumulator.blogs
+      ? current
+      : accumulator
+    )
 
   return most
 }
@@ -58,27 +62,30 @@ const mostLikes = (blogsArray) => {
     return {}
   }
 
-  const likeHash = {}
-  blogsArray.forEach((blog) => {
-    likeHash[blog.author] === undefined
-    ? likeHash[blog.author] = blog.likes
-    : likeHash[blog.author] += blog.likes
-  })
-
-  const most = {
-    author: null,
-    likes: 0
-  }
-
-  Object.entries(likeHash).forEach(([author, likes]) => {
-    if (most.likes < likes) {
-      most.author = author
-      most.likes = likes
-    }
-  })
+  const likeCountObj = blogsArray
+    .reduce( (accumulator, current) => {
+      accumulator[current.author] === undefined
+      ? accumulator[current.author] = current.likes
+      : accumulator[current.author] += current.likes
+    return accumulator
+    }, {})
+  
+  const most = Object.entries(likeCountObj)
+    .map( ([key, value]) => {
+      return(
+        {
+          author: key,
+          likes: value
+        }
+      )}
+    )
+    .reduce( (accumulator, current) => 
+      current.likes > accumulator.likes
+      ? current
+      : accumulator
+    )
 
   return most
-
 }
 
 module.exports = {
