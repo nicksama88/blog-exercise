@@ -7,16 +7,21 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.post('/', async (request, response) => {
-  const blog = new Blog(request.body)
+  const body = request.body
 
-  const savedBlog = await blog.save()
-  response.status(201).json(savedBlog.toJSON())
-
-  // blog
-  //   .save()
-  //   .then(result => {
-  //   response.status(201).json(result)
-  //   })
-  })
+  if (body.url === undefined || body.title === undefined) {
+    response.status(400).end()
+  } else {
+    const blog = new Blog({
+      author: body.author,
+      likes: body.likes || 0,
+      title: body.title,
+      url: body.url,
+    })
+  
+    const savedBlog = await blog.save()
+    response.status(201).json(savedBlog.toJSON())
+  }
+})
 
 module.exports = blogsRouter
