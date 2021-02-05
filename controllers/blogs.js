@@ -25,9 +25,6 @@ blogsRouter.post('/', async (request, response) => {
   }
   const user = await User.findById(decodedToken.id)
 
-  if (body.url === undefined || body.title === undefined) {
-    response.status(400).end()
-  } else {
     const blog = new Blog({
       title: body.title,
       author: body.author,
@@ -41,7 +38,7 @@ blogsRouter.post('/', async (request, response) => {
     await user.save()
     const blogAfterUser = await Blog.findById(savedBlog.id).populate('user', { username: 1, name: 1 })
     response.status(201).json(blogAfterUser.toJSON())
-  }
+  
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
