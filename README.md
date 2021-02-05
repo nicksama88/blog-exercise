@@ -1,3 +1,6 @@
+# bloglist-backend
+Backend for bloglist example app
+
 Single page app for keeping a list of blogs, along with details like author, url, and user who saved the blog.
 
 Has the following features:
@@ -11,6 +14,10 @@ Has the following features:
   - server-side authentication for title and author to be required, along with URL to be unique using Mongoose library
 - user has option to click "like" button on each blog to increment its number of "likes"
   - blogs will render themselves in order of decreasing number of likes
+- some api components can be accessed directly
+  - /api/users for user information JSON
+  - /api/blogs for blog information JSON
+- some unit testing with jest and supertest
 
 log in with the following credentials:
 ```
@@ -20,6 +27,10 @@ password: gimmieblogs
 
 The following technologies were used:
 - Created with the MERN stack.
+  - MongoDB
+  - Express
+  - React
+  - Node
 - Database hosted via MongoDBAtlas.
 - App hosted on Heroku.
 
