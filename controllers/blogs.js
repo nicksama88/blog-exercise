@@ -70,7 +70,7 @@ blogsRouter.delete('/:id', async (request, response) => {
     await User.findByIdAndUpdate(decodedToken.id, {blogs: foundBlogList})
     response.status(204).end()
   } else {
-    response.status(400).json({ error: 'only user who added the blog may delete' })
+    response.status(403).json({ error: 'only user who added the blog may delete' })
   }
 })
 
@@ -88,7 +88,12 @@ blogsRouter.put('/:id', async (request, response) => {
     .findByIdAndUpdate(
       request.params.id, blogInputs, { new: true, runValidators: true, context: 'query' }
     )
-  response.json(updatedBlog.toJSON())
+
+  if (!updatedBlog) {
+    response.status(404).json({ error: 'blog not found' })
+  } else {
+    response.json(updatedBlog.toJSON())
+  }
 })
 
 blogsRouter.post('/:id/comments', async (request, response) => {
